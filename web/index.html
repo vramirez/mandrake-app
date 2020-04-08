@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--
+    The next iteration of our Mythical Mysfits website. Updates include
+    dynamically pulling the mysfits from our backend service via the network
+    load balancer DNS name. There is also additional functionality for filtering
+    mysfits that we have yet to implement on the backend service.  You will see
+    the buttons available on the webpage, but because that functionality isn't
+    implemented on the backend, it does not yet work.  You will implement it during
+    module 3!
+  -->
+  <head>
+    <title>Tu Mandrake</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+  </head>
+  <body ng-app="mysApp" style="background-color:#EBEBEB">
+    <style>
+      @media (max-width: 800px) {
+      	img {
+          max-width: 300px;
+      	}
+      }
+    </style>
+    <br>
+    <div style="text-align: center">
+      <img src="https://www.mythicalmysfits.com/images/mysfits_banner.gif" width="800px" align="center">
+    </div>
+    <br>
+    <div class="container">
+      <div id="mysfitsGrid" class="row" ng-controller="mysfitsListController">
+          <div class="col-md-4 border border-warning" ng-repeat="mysfit in mysfits">
+              <br>
+              <p align="center">
+                <strong> {{mysfit.artist}}</strong>
+              </p>
+              <p>
+                <br>
+                <b>Species:</b> {{mysfit.species}}
+                <br>
+                <b>Age:</b> {{mysfit.age}}
+                <br>
+                <b>Good/Evil:</b> {{mysfit.goodevil}}
+                <br>
+                <b>Lawful/Chaotic:</b> {{mysfit.lawchaos}}
+              </p>
+          </div>
+        </div>
+      </div>
+    <p>
+      <br>
+      <br>
+      &nbsp;&nbsp;This site was created for use in the AWS Modern Application Workshop. <a href="https://github.com/aws-samples/aws-modern-application-workshop">Please see details here.</a>
+    </p>
+  </body>
+  <script>
+    //Encima, el mio, debajo el original
+    //var mysfitsApiEndpoint = 'https://846hdtkmt7.execute-api.us-east-1.amazonaws.com/Prod';
+    var mysfitsApiEndpoint='https://u17isv06ab.execute-api.us-east-1.amazonaws.com/prod'
+    var app = angular.module('mysApp', []);
+
+    var gridScope;
+
+    var filterScope;
+
+    
+    
+
+    /*
+      Populate the main mysfit grid on page load.
+    */
+    app.controller('mysfitsListController', function($scope) {
+
+      gridScope = $scope;
+      alert("controller")
+      getAllMysfits(applyGridScope);
+
+    });
+
+    /*
+      Reload the grid of mysfits whenever a new list is retrieved based
+      on the filters selected.
+    */
+    function applyGridScope(mysfitsList) {
+      alert("apply grid")
+      gridScope.mysfits = mysfitsList;
+      gridScope.$apply();
+    }
+
+    /*
+      Retrieve the full list of mysfits from the backend service API.
+    */
+    function getAllMysfits(callback) {
+      
+      var mysfitsApi = mysfitsApiEndpoint + '/mysfits';
+      alert("reading all "+mysfitsApi)
+      $.ajax({
+        url : mysfitsApi,
+        type : 'GET',
+        success : function(response) {
+          callback(response.mysfits);
+        },
+        error : function(response) {
+          console.log("could not retrieve mysfits list.");
+          console.log(response.message);
+          alert(response.responseText)
+        }
+      });
+    }
+
+
+  </script>
+</html>
+
