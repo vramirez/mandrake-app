@@ -7,12 +7,12 @@ def lambda_main(event, context):
     print("loaaaaading2...")
     print(obj)
     print(type(obj))
+    print(json.dumps(obj))
+    print(type(json.dumps(obj)))
+    
+    return obj
         
-    return {
-        "statusCode": 200,
-        "body": obj
-        
-    }
+    
 
 
 def write_event(event, context):

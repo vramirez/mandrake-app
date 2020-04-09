@@ -29,9 +29,10 @@ def getEventsJson(items):
         mandrake["likes"] = item["Likes"]["N"]
         mandrake["adopted"] = item["Adopted"]["BOOL"]
         '''
-        mandrakeList["mysfits"].append(mandrake)
-
-    return mandrakeList
+        mandrakeList["events"].append(mandrake)
+    print("a: ",type(mandrakeList))
+    print("b: ",type(mandrakeList["events"]))
+    return dict(mandrakeList["events"])
 
 def getAllEvents():
     # Retrieve all Mysfits from DynamoDB using the DynamoDB scan operation.
@@ -52,9 +53,10 @@ def getAllEvents():
 
     # loop through the returned mysfits and add their attributes to a new dict
     # that matches the JSON response structure expected by the frontend.
-    mandrakeList = getEventsJson(response["Items"])
-
-    return json.dumps(mandrakeList)
+    #mandrakeList = getEventsJson(response["Items"])
+    #print("c: ",type(mandrakeList))
+    type(response["Items"])
+    return response["Items"]
 
 '''def queryMysfitItems(filter, value):
     # Use the DynamoDB API Query to retrieve mysfits from the table that are
