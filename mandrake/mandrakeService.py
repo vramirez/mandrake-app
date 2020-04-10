@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, json, Response, request
+#from flask import Flask, jsonify, json, Response, request
 import mandrakeTableClient
 
 
@@ -32,8 +32,8 @@ def getAllEvents():
         # no filter was found, retrieve all mysfits.
     serviceResponse = mandrakeTableClient.getAllEvents()
 
-    flaskResponse = Response(serviceResponse)
-    flaskResponse.headers["Content-Type"] = "application/json"
+    ##flaskResponse = Response(serviceResponse)
+    ##flaskResponse.headers["Content-Type"] = "application/json"
 
     #return flaskResponse
     return serviceResponse
