@@ -8,6 +8,8 @@ import argparse
 # use the credentials associated with our ECS task role to communicate with
 # DynamoDB, so no credentials need to be stored/managed at all by our code!
 client = boto3.client('dynamodb')
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table("Mandrake")
 
 def getEventsJson(items):
     # loop through the returned mysfits and add their attributes to a new dict
@@ -45,7 +47,7 @@ def getAllEvents():
     # use of ElastiCache can provide these benefits. But, because out Mythical
     # Mysfits API is low traffic and the table is very small, the scan operation
     # will suit our needs for this workshop.
-    response = client.scan(
+    response = table.scan(
         TableName='Mandrake'
     )
 
@@ -55,7 +57,7 @@ def getAllEvents():
     # that matches the JSON response structure expected by the frontend.
     #mandrakeList = getEventsJson(response["Items"])
     #print("c: ",type(mandrakeList))
-    type(response["Items"])
+    #type(response["Items"])
     return response["Items"]
 
 '''def queryMysfitItems(filter, value):
@@ -94,9 +96,9 @@ def queryMysfits(queryParam):
 '''
 
 def putItem(item):
-    response = client.put_item(
-        TableName='string',
-            Item=item,ReturnValues='ALL_NEW')
+    response = table.put_item(
+        TableName='Mandrake',
+            Item=item)
 
 
 # So we can test from the command line

@@ -4,47 +4,96 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <title>DynamoDB table - Contents</title>
+    <title>MandrakeApp - Eventos Online gratuitos #QuedateEnCasa</title>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>
   </head>
   <body>
     <div class='container'>
         <h1>Mandrake App</h1>
-        <p>A continuacion, listado de eventos en vivo </p>
-        <p id='loading'><em>Loading prices...</em></p>
+        <p>A continuacion, listado de eventos online <b>#QuedateEnCasa</b> </p>
+        <p>¡Todos los días hay eventos nuevos!. Los eventos resaltados ocurren <b>HOY</b>, ¡no te los pierdas!</p>
+        <p id='loading'><em>Loading events...</em></p>
         <div class='table-responsive'>
-            <table class='table table-striped' style='display: none'>
+            <table class='table table-responsive' style='display: none'>
                 <tr>
                     <th>Artista</th>
-                    <th>Fecha</th>
-                    <th>Column3</th>
-                    <th>Column4</th>
+                    <th>Fecha Hora COL/MEX</th>
+                    <th>Fecha Hora ARG</th>
+                    <th  align="center">Link Evento</th>
                 </tr>
             </table>
         </div>
     </div>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
     <script>
-    // Using good-old jQuery to fill the table with data received from the API Gateway endpoint
     $(document).ready(function() {
-        var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/mysfits';
+        var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getAll';
         var rows = [];
+        var tudei = false
         $.getJSON(api_gateway_url, function(data) {
           data.forEach(function(item) {
-              alert(typeof(item))
-                rows.push(`<tr> \
-                    <td>${item['artist']['S']}</td> \
-                    <td>${item['date']['S']}</td> \
-                    <td>${item['media']['M']}</td> \
+            tudei=sameDay(new Date(),new Date(item['date']))
+              //alert(item['artist'])
+            
+                rows.push(`<tr ${printHighlight(tudei)}> \
+                  
+                    <td>${item['artist']}</td> \
+                    <td>${formatDate(item['date'],0)}</td> \
+                    <td>${formatDate(item['date'],+2)}</td>\      
+                    ${printLinks(item['link'])}\
                     
                 </tr>`);
             });
-            alert("OK!")
-            // show the now filled table and hide the "loading" message
             $('table.table').append(rows.join()).show();
             $('#loading').hide();
         });
     });
+    
+    function printLinks(links){
+      //alert(links[0]['url'])
+      var ret=''
+      for (var i=0;i<links.length;i++){        
+        ret+='<td><a href="'+links[i]['url']+'" target=\"_blank\">'+links[i]['media']+'</a></td>'
+      }
+      return ret
+    }
+
+    function sameDay(d1, d2) {
+    return d1.getFullYear() === d2.getFullYear() &&     d1.getMonth() === d2.getMonth() &&    d1.getDate() === d2.getDate();
+}
+  function printHighlight(bool){
+        if (bool)
+          
+        return ' bgcolor="#00DD88" '
+          //else return ''
+      }
+      function printB2(bool){
+        if (bool)          
+        return '</b>'
+        else return ''
+      }
+
+    function formatDate(date,utc) {
+    var d = new Date(new Date(date).getTime()+(utc*3600*1000)),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear(),
+        hours=''+d.getHours(),
+        mins=''+d.getMinutes();
+      
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+    if(hours.length<2)
+        hours = '0'+hours;
+    if (mins.length<2)
+        mins = '0'+mins;
+    
+    deit=[year, month, day].join('-')
+    taim=[hours,mins].join(':')
+    return deit+' '+taim;
+    }
     </script>
   </body>
 </html>

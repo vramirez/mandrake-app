@@ -17,21 +17,18 @@ def lambda_main(event, context):
 
 def write_event(event, context):
     #obj=mk.getAllEvents() 
+    '''artist=event["artist"]
+    date=event["date"]
+    utc_time=event["utc_time"]
+    '''
+    type(event)
+    type(json.dumps(event))
     print("INSERTIIIING...")
-    mk.put    
-    return {
-        "statusCode": 200,
-        "body": json.dumps({"message":"inserted"})
-        
-        #json.dumps({
-        # "location": ip.text.replace("\n", "")
-        #}),
-    }
+    mk.putItem(event)
+    return event
+
 
 def defoe(event, context):
     #print(event)
     
-    return {
-        "statusCode":200,
-        "body":json.dumps({"message":"Todo en orden por aca"})
-    }
+    return "ok"

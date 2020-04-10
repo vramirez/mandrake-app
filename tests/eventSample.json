@@ -1,0 +1,17 @@
+{
+    "artist":"Nombre Artista",
+    "utc_datetime":"2020-05-10",
+    "photo":"www.linkfoto.com/photo.jpeg",
+    "link":  [ 
+        {
+        "media":"RED SOCIAL",
+        "url":"https://linkdelevento.com"
+        }
+        ,
+        {
+        "media":"Facebook",
+        "url":"https://facebook.com/Artista"
+        }
+	]
+        
+}

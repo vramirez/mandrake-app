@@ -25,7 +25,7 @@ Resources:
         GetApi:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /mysfits
+            Path: /getAll
             Method: get
             RestApiId: 
               Ref: MandrakeApi
@@ -44,8 +44,13 @@ Resources:
         WriteEvent:
           Type: Api
           Properties:
-            Path: /puto 
+            Path: /put 
             Method: put
+            RestApiId: 
+              Ref: MandrakeApi
+      Policies:
+        - AmazonDynamoDBFullAccess
+
 
   LambdaDefault:
     Type: AWS::Serverless::Function
@@ -72,7 +77,7 @@ Resources:
               title:
                 Ref: AWS::StackName
             paths:
-              /mysfits:
+              /getAll:
                 get:
                   produces:
                     - "application/json"
@@ -117,6 +122,57 @@ Resources:
                         statusCode: "200"
                         responseParameters:
                           method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    passthroughBehavior: "when_no_match"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    type: "mock"
+              /put:
+                put:
+                  produces:
+                    - "application/json"
+                  responses:
+                   '200':
+                     description: "200 response"
+                     schema:
+                       $ref: "#/definitions/Empty"
+                     headers:
+                       Access-Control-Allow-Origin:
+                         type: "string"                  
+                  x-amazon-apigateway-integration:
+                    httpMethod: POST
+                    type: aws
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaPutEvent.Arn}/invocations
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    '200':
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'PUT,OPTIONS'"
                           method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
                           method.response.header.Access-Control-Allow-Origin: "'*'"
                     passthroughBehavior: "when_no_match"
