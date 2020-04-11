@@ -21,7 +21,8 @@
         <div class='wrap'>
             <table class='table table-responsive' style='display: none'>
                 <tr>
-                    <th>Artista</th>
+                    <th>Artista(s)</th>
+                    <th>Evento</th>
                     <th>Fecha Hora COL/MEX</th>
                     <th>Fecha Hora ARG</th>
                     <th  align="center">Link Evento</th>
@@ -42,7 +43,8 @@
             
                 rows.push(`<tr ${printHighlight(tudei)}> \
                   
-                    <td>${item['artist']}</td> \
+                    <td>${showItem(item,'photo')}</td> \
+                    <td>${showItem(item,'event')}</td>
                     <td>${formatDate(item['date'],0)}</td> \
                     <td>${formatDate(item['date'],+2)}</td>\      
                     ${printLinks(item['link'])}\
@@ -113,19 +115,41 @@
 
       }
     }
+    /*
+    
+    */
     function getMediatext(media){
-      socialMedia=['facebook','twitter']
-      switch(media.toLowerCase()){
-        case 'facebook':
-          return ' '
-        case 'youtube':
-          return '  '
-          case 'instagram':
-          return '  '
-        default:
-        return 'Sitio evento'
+      var socialMedia=['facebook','twitter','instagram','youtube']
+      if (socialMedia.includes(media.toLowerCase())){
+      return ' '
+      
+      }else{
+        return 'Sitio Evento'
 
       }
+    }
+    function showItem(item,key){
+      var ret=''
+
+      switch(key){
+        case 'photo':
+        var artist=item['artist']
+        if(key in item)
+          ret+=`<img src="${item[key]}" alt="${artist}" width="100" height="100"> ${artist}`
+        else
+          ret+=`${artist}`
+          break;
+        case 'event':
+          if (key in item){
+            ret+=`${item[key]}`
+          }else{
+            ret+=''
+          }
+          break;
+          default:
+          return ''
+      }
+      return ret
     }
     </script>
   </body>
