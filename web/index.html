@@ -5,7 +5,12 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>MandrakeApp - Eventos Online gratuitos #QuedateEnCasa</title>
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="css/index.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   </head>
   <body>
     <div class='container'>
@@ -13,13 +18,14 @@
         <p><font size=4>A continuacion, listado de eventos online <b>#QuedateEnCasa</b> ¡Todos los días hay eventos nuevos! </p>
         <p>Los eventos resaltados ocurren <b>HOY</b>, ¡no te los pierdas!</font></p>
         <p id='loading'><em>Loading events...</em></p>
-        <div class='table-responsive'>
+        <div class='wrap'>
             <table class='table table-responsive' style='display: none'>
                 <tr>
-                    <th>Artista</th>
+                    <th>Artista(s)</th>
+                    <th>Evento</th>
                     <th>Fecha Hora COL/MEX</th>
                     <th>Fecha Hora ARG</th>
-                    <th  align="center">Link Evento</th>
+                    <th  align="center">Link</th>
                 </tr>
             </table>
         </div>
@@ -27,7 +33,7 @@
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
     <script>
     $(document).ready(function() {
-        var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getAll';
+        var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getTodayNewer';
         var rows = [];
         var tudei = false
         $.getJSON(api_gateway_url, function(data) {
@@ -37,7 +43,8 @@
             
                 rows.push(`<tr ${printHighlight(tudei)}> \
                   
-                    <td>${item['artist']}</td> \
+                    <td>${showItem(item,'photo')}</td> \
+                    <td>${showItem(item,'event')}</td>
                     <td>${formatDate(item['date'],0)}</td> \
                     <td>${formatDate(item['date'],+2)}</td>\      
                     ${printLinks(item['link'])}\
@@ -53,7 +60,7 @@
       //alert(links[0]['url'])
       var ret=''
       for (var i=0;i<links.length;i++){        
-        ret+='<td><a href="'+links[i]['url']+'" target=\"_blank\">'+links[i]['media']+'</a></td>'
+        ret+='<td><a href="'+links[i]['url']+'" target=\"_blank\" '+getMediaIcon(links[i]['media'])+'>'+getMediatext(links[i]['media'])+'</a></td>'
       }
       return ret
     }
@@ -93,6 +100,58 @@
     deit=[year, month, day].join('-')
     taim=[hours,mins].join(':')
     return deit+' '+taim;
+    }
+
+    function getMediaIcon(media){
+      switch(media.toLowerCase()){
+        case 'facebook':
+          return ' class="fa fa-facebook" '
+        case 'youtube':
+          return ' class="fa fa-youtube" '
+        case 'instagram':
+          return ' class="fa fa-instagram" '
+        case 'twitter':
+          return ' class="fa fa-twitter" '
+        default:
+        return ''
+
+      }
+    }
+    /*
+    
+    */
+    function getMediatext(media){
+      var socialMedia=['facebook','twitter','instagram','youtube']
+      if (socialMedia.includes(media.toLowerCase())){
+      return ' '
+      
+      }else{
+        return 'Sitio Evento'
+
+      }
+    }
+    function showItem(item,key){
+      var ret=''
+
+      switch(key){
+        case 'photo':
+        var artist=item['artist']
+        if(key in item)
+          ret+=`<img src="${item[key]}"  width="100" height="100"> ${artist}`
+        else
+          ret+=`${artist}`
+          break;
+        case 'event':
+          if (key in item){
+            ret+=`${item[key]}`
+          }else{
+            ret+=''
+          }
+          break;
+          default:
+          return ''
+      }
+      return ret
     }
     </script>
   </body>

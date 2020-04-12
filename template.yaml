@@ -12,6 +12,27 @@ Globals:
     
 
 Resources:
+  mandrakeDynamoDBTable:
+    Type: AWS::DynamoDB::Table    
+    Properties:       
+      AttributeDefinitions:
+                -           
+                  AttributeName: "artist"          
+                  AttributeType: "S"        
+                -           
+                  AttributeName: "date"          
+                  AttributeType: "S" 
+      KeySchema:         
+        -           
+          AttributeName: "artist"          
+          KeyType: "HASH"
+        -
+          AttributeName: "date"          
+          KeyType: "RANGE"      
+      ProvisionedThroughput:         
+          ReadCapacityUnits: "2"        
+          WriteCapacityUnits: "1"      
+      TableName: "mandrake-fixed-dev2"
   LambdaListAll:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -32,7 +53,25 @@ Resources:
       Policies: 
         - AmazonDynamoDBFullAccess
           
-
+  LambdaListTodayNewer:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: mandrake/
+      Handler: app.getTodayNewerEvents
+      Runtime: python3.7
+      Description: Allows to retrieve all events from today on
+      MemorySize: 128
+      Timeout: 10      
+      Events:
+        GetApi:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /getTodayNewer
+            Method: get
+            RestApiId: 
+              Ref: MandrakeApi
+      Policies: 
+        - AmazonDynamoDBFullAccess
   
   LambdaPutEvent:
     Type: AWS::Serverless::Function
@@ -94,6 +133,57 @@ Resources:
                     type: aws
                     uri:
                       Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaListAll.Arn}/invocations
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                options:
+                  consumes:
+                  - "application/json"
+                  produces:
+                  - "application/json"
+                  responses:
+                    '200':
+                      description: "200 response"
+                      schema:
+                        $ref: "#/definitions/Empty"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    passthroughBehavior: "when_no_match"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    type: "mock"
+              /getTodayNewer:
+                get:
+                  produces:
+                    - "application/json"
+                  responses:
+                   '200':
+                     description: "200 response"
+                     schema:
+                       $ref: "#/definitions/Empty"
+                     headers:
+                       Access-Control-Allow-Origin:
+                         type: "string"                  
+                  x-amazon-apigateway-integration:
+                    httpMethod: POST
+                    type: aws
+                    uri:
+                      Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaListTodayNewer.Arn}/invocations
                     responses:
                       default:
                         statusCode: "200"
