@@ -2,14 +2,18 @@ import boto3
 import json
 import logging
 from collections import defaultdict
+from datetime import datetime
 import argparse
+from boto3.dynamodb.conditions import Key, Attr
+import pytz
 
 # create a DynamoDB client using boto3. The boto3 library will automatically
 # use the credentials associated with our ECS task role to communicate with
 # DynamoDB, so no credentials need to be stored/managed at all by our code!
 client = boto3.client('dynamodb')
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table("Mandrake")
+TABLE_NAME="Mandrake"
+table = dynamodb.Table(TABLE_NAME)
 
 def getEventsJson(items):
     # loop through the returned mysfits and add their attributes to a new dict
@@ -100,6 +104,13 @@ def putItem(item):
         TableName='Mandrake',
             Item=item)
 
+def getTodayAndNewerEvents():    
+    tudei=datetime.now(pytz.timezone('US/Pacific')).strftime("%Y-%m-%d")
+    fe = Key('date').gte(tudei)
+    response = table.scan(
+        FilterExpression=fe
+    )
+    return response["Items"]
 
 # So we can test from the command line
 '''if __name__ == "__main__":

@@ -1,17 +1,18 @@
 {
-    "artist":"Nombre Artista",
-    "utc_datetime":"2020-05-10",
-    "photo":"www.linkfoto.com/photo.jpeg",
+    "artist":"Madelein Peyroux",
+    "date":"2020-04-12 18:00",
     "link":  [ 
         {
-        "media":"RED SOCIAL",
-        "url":"https://linkdelevento.com"
+        "media":"Facebok",
+        "url":"https://www.facebook.com/MadeleinePeyroux/"
         }
-        ,
-        {
-        "media":"Facebook",
-        "url":"https://facebook.com/Artista"
-        }
+        
+        
 	]
+	,
+	"photo":"https://www.rockdelux.com/files/article/4205/art-madeleinepeyroux_248-3.jpg",
+	"event":"Brooklyn sessions (jazz)",
+	"type":"music",
+	"genre":"jazz"
         
 }

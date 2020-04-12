@@ -18,3 +18,8 @@ def defoe(event, context):
     #print(event)
     
     return "ok"
+
+
+def getTodayNewerEvents(event, context):
+    obj=mk.getTodayNewer()
+    return obj

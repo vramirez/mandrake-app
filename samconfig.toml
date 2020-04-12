@@ -1,3 +1,4 @@
 version=0.1
 [default.deploy.parameters]
 region = "us-east-1"
+stack_name = "stack-mandrake-file"

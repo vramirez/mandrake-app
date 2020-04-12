@@ -33,7 +33,7 @@
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
     <script>
     $(document).ready(function() {
-        var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getAll';
+        var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getTodayNewer';
         var rows = [];
         var tudei = false
         $.getJSON(api_gateway_url, function(data) {
@@ -110,6 +110,8 @@
           return ' class="fa fa-youtube" '
         case 'instagram':
           return ' class="fa fa-instagram" '
+        case 'twitter':
+          return ' class="fa fa-twitter" '
         default:
         return ''
 
@@ -135,7 +137,7 @@
         case 'photo':
         var artist=item['artist']
         if(key in item)
-          ret+=`<img src="${item[key]}" alt="${artist}" width="100" height="100"> ${artist}`
+          ret+=`<img src="${item[key]}"  width="100" height="100"> ${artist}`
         else
           ret+=`${artist}`
           break;
