@@ -34,6 +34,7 @@
     <script>
     $(document).ready(function() {
         var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getTodayNewer';
+        var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
         var rows = [];
         var tudei = false
         $.getJSON(api_gateway_url, function(data) {
@@ -60,7 +61,7 @@
       //alert(links[0]['url'])
       var ret=''
       for (var i=0;i<links.length;i++){        
-        ret+='<td><a href="'+links[i]['url']+'" target=\"_blank\" '+getMediaIcon(links[i]['media'])+'>'+getMediatext(links[i]['media'])+'</a></td>'
+        ret+='<td><a href="'+links[i]['url']+'" target=\"_blank\" '+getSocialMediaIcon(links[i]['media'])+'>'+getMediatext(links[i]['media'])+'</a></td>'
       }
       return ret
     }
@@ -102,17 +103,12 @@
     return deit+' '+taim;
     }
 
-    function getMediaIcon(media){
-      switch(media.toLowerCase()){
-        case 'facebook':
-          return ' class="fa fa-facebook" '
-        case 'youtube':
-          return ' class="fa fa-youtube" '
-        case 'instagram':
-          return ' class="fa fa-instagram" '
-        case 'twitter':
-          return ' class="fa fa-twitter" '
-        default:
+    function getSocialMediaIcon(media){
+      var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
+      media=media.toLowerCase()
+      if (socialMedia.includes(media)){
+       return ' class="fa fa-'+media+'" '
+      }else{
         return ''
 
       }
@@ -121,7 +117,7 @@
     
     */
     function getMediatext(media){
-      var socialMedia=['facebook','twitter','instagram','youtube']
+      var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
       if (socialMedia.includes(media.toLowerCase())){
       return ' '
       
@@ -155,4 +151,7 @@
     }
     </script>
   </body>
+  <div align="center">
+ <p>Si conoces algún evento que podamos incluir, no dudes en contactarnos a nuestro email: <b>mandrakeapp2020 en Gmail</b></p>
+</div>
 </html>
