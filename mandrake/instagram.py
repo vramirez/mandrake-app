@@ -41,7 +41,7 @@ for item in items2:
             print("cached ",user['username'])
         if(user['follower_count']>FOLLOWER_COUNT):
             time.sleep(10)
-            print(datetime.utcfromtimestamp(item['taken_at']).strftime('%Y-%m-%d %H:%M:%S')," ", item['image_versions2']['candidates'][0]['url']," ",user['user']['follower_count'])
+            print(datetime.utcfromtimestamp(item['taken_at']).strftime('%Y-%m-%d %H:%M:%S')," ", item['image_versions2']['candidates'][0]['url']," ",user['follower_count'])
 
 def getCachedUser(userId,dict,key):
     for user in dict[key]:
