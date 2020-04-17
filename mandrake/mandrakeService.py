@@ -11,7 +11,7 @@ import mandrakeTableClient
 # sent to the service root will receive a healthy response.
 #@app.route("/")
 def healthCheckResponse():
-    return jsonify({"message" : "Nothing here, used for health check. Try /mandrake instead."})
+    return "Nothing here, used for health check. Try /mandrake instead."
 
 # Returns the data for all of the Mysfits to be displayed on
 # the website.  If no filter query string is provided, all mysfits are retrived
