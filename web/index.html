@@ -22,7 +22,8 @@
             <table class='table table-responsive' style='display: none'>
                 <tr>
                     <th>Artista(s)</th>
-                    <th>Evento</th>
+                    <th>Tipo</th>
+                    <th>Nombre Evento</th>
                     <th>Fecha Hora COL/MEX</th>
                     <th>Fecha Hora ARG</th>
                     <th  align="center">Link</th>
@@ -45,7 +46,9 @@
                 rows.push(`<tr ${printHighlight(tudei)}> \
                   
                     <td>${showItem(item,'photo')}</td> \
-                    <td>${showItem(item,'event')}</td>
+                    <td>${getEventType(item)}</td>
+                    
+                    <td>${showItem(item,'event')}</td> \
                     <td>${formatDate(item['date'],0)}</td> \
                     <td>${formatDate(item['date'],+2)}</td>\      
                     ${printLinks(item['link'])}\
@@ -56,6 +59,15 @@
             $('#loading').hide();
         });
     });
+
+    function getEventType(item){
+      if (item['type']=="music")
+      return "Concierto"
+      if (item['type']=="talk")
+      return "Charla"
+      //if()
+      return "N/A"
+    }
     
     function printLinks(links){
       //alert(links[0]['url'])
