@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Register for MandrakeApp</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="js/aws-cognito-sdk.min.js"></script>
+    <script src="js/amazon-cognito-identity.min.js"></script>
+  </head>
+  <body style="background-color:#EBEBEB">
+    <br>
+    <div style="text-align: center">
+
+     <!-- <img src="https://www.mythicalmysfits.com/images/mysfits_banner.gif" width="800px" align="center">-->
+    </div>
+    <div class="container">
+      <h3>Registro en MandrakeApp</h3>
+      <form id="userDetails" >
+        <div class="form-group">
+          <label for="gname">Nombre(s):</label>
+          <input type="text" class="form-control" id="gname" placeholder="Ingrese nombre" name="gname" required>
+          <label for="lname">Apellido(s):</label>
+          <input type="text" class="form-control" id="lname" placeholder="Ingrese apellidos" name="lname" required>
+          <label for="email">Email:</label>
+          <input type="email" class="form-control" id="email" placeholder="Ingrese su email personal" name="email">
+          <label for="pwd">Password: </label>
+          <input type="password" class="form-control" id="pwd" placeholder="Password " name="pwd">
+          <label for="confirmPwd">Confirm Password:</label>
+          <input type="password" class="form-control" id="confirmPwd" placeholder="Confirme password" name="confirmPwd">
+        <button type="submit" class="btn btn-info">Enviar</button>
+      </div>
+    </form>
+    </div>
+
+  </body>
+
+  <script>
+//us-east-1_mP9Mp5gQA
+  //var cognitoUserPoolId = 'us-east-1_PnJomwg3k';  // example: 'us-east-1_abcd12345'
+  //var cognitoUserPoolClientId = '1updq8ff0evr7lj4b6mms9olrj'; // example: 'abcd12345abcd12345abcd12345'
+  var cognitoUserPoolId = 'us-east-1_mP9Mp5gQA';  // example: 'us-east-1_abcd12345'
+  var cognitoUserPoolClientId = '4ggndrsi201o310br9f46ahbsi'; // example: 'abcd12345abcd12345abcd12345'
+
+  $(document).on('click', '.btn-info', function(event) {
+    event.preventDefault();
+
+    var poolData = {
+      UserPoolId : cognitoUserPoolId,
+      ClientId : cognitoUserPoolClientId
+    };
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+    var attributeList = [];
+
+    var gname = document.getElementById('gname').value;
+    var lname = document.getElementById('lname').value;
+    var email = document.getElementById('email').value;
+    var pw = document.getElementById('pwd').value;
+    var confirmPw = document.getElementById('confirmPwd').value;
+    var dataEmail = {
+        Name : 'email',
+        Value : email
+    };
+
+    var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+
+    attributeList.push(attributeEmail);
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:'given_name',Value:gname}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:'family_name',Value:lname}));
+
+    if (pw === confirmPw) {
+      userPool.signUp(email, pw, attributeList, null, function(err, result){
+          if (err) {
+              alert(err.message);
+              return;
+          }
+          cognitoUser = result.user;
+          console.log(cognitoUser);
+          localStorage.setItem('email', email);
+          window.location.replace('confirm.html');
+      });
+    } else {
+      alert('Passwords do not match.')
+    }
+
+  });
+  </script>
+</html>
