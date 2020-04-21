@@ -55,8 +55,6 @@
 
     var attributeList = [];
 
-    var gname = document.getElementById('gname').value;
-    var lname = document.getElementById('lname').value;
     var email = document.getElementById('email').value;
     var pw = document.getElementById('pwd').value;
     var confirmPw = document.getElementById('confirmPwd').value;
@@ -67,6 +65,8 @@
 
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
+    gname = document.getElementById('gname').value;
+    lname = document.getElementById('lname').value;
     attributeList.push(attributeEmail);
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:'given_name',Value:gname}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:'family_name',Value:lname}));
