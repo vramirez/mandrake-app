@@ -212,14 +212,19 @@
     }
 
     function getEventType(item){
-      if (item['type']=="music")
+      type=item['type']
+      switch(type){
+      case "music":
       return "Concierto"
-      if (item['type']=="talk")
+      case "talk":
       return "Charla"
-      if (item['type']=="art")
+      case "art":
       return "Arte y Cultura"
-      
-      return "N/A"
+      case "workshop":
+        return "Taller"
+      default :
+        return "N/A"
+      }
     }
 
     function showItem(item,key){
