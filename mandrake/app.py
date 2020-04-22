@@ -21,5 +21,9 @@ def defoe(event, context):
 
 
 def getTodayNewerEvents(event, context):
-    obj=mk.getTodayNewer()
+    obj=mk.getTodayNewer('US/Pacific')
+    return obj
+
+def getTodayEvents(event, context):
+    obj=mk.getToday()
     return obj

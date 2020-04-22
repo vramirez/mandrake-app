@@ -2,7 +2,7 @@ import boto3
 import json
 import logging
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime,timedelta
 import argparse
 from boto3.dynamodb.conditions import Key, Attr
 import pytz
@@ -104,14 +104,33 @@ def putItem(item):
         TableName='Mandrake',
             Item=item)
 
-def getTodayAndNewerEvents():    
-    tudei=datetime.now(pytz.timezone('US/Pacific')).strftime("%Y-%m-%d")
-    fe = Key('date').gte(tudei)
+def getTodayAndNewerEvents(tz='UTC'):    
+    tudei=datetime.now(pytz.timezone(tz)).strftime("%Y-%m-%d")
+    fe = Key('date').gte(tudei) 
     response = table.scan(
         FilterExpression=fe
     )
     return response["Items"]
 
+def getTodayEvents(tz='America/Bogota'):
+    today=datetime.now(pytz.timezone(tz))
+    begin=today.strftime("%Y-%m-%d")
+    end=(today+timedelta(days=1)).strftime("%Y-%m-%d")
+    fe = Key('date').gte(begin) & Key('date').lte(end)
+    response = table.scan(
+        FilterExpression=fe
+    )
+    return response["Items"]
+
+def getDayEvents(deit,tz='America/Bogota'):
+    today=datetime.strptime(deit, '%Y-%m-%d')
+    begin=today.strftime("%Y-%m-%d")
+    end=(today+timedelta(days=1)).strftime("%Y-%m-%d")
+    fe = Key('date').gte(begin) & Key('date').lte(end)
+    response = table.scan(
+        FilterExpression=fe
+    )
+    return response
 # So we can test from the command line
 '''if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -46,5 +46,8 @@ def getAllEvents():
 def putItem(item):
     mandrakeTableClient.putItem(item)
 
-def getTodayNewer():
-    return mandrakeTableClient.getTodayAndNewerEvents()
+def getTodayNewer(tz):
+    return mandrakeTableClient.getTodayAndNewerEvents(tz)
+
+def getToday():
+    return mandrakeTableClient.getTodayEvents()

@@ -57,7 +57,8 @@
     <div class='container'>
         <h1>Mandrake App</h1>
         <p><font size=4>A continuacion, listado de eventos online <b>#QuedateEnCasa</b> ¡Todos los días hay eventos nuevos! </p>
-        <p>Los eventos resaltados ocurren <b>HOY</b>, ¡no te los pierdas!</font></p>
+        <p id='today'>Los eventos listados ocurren <b>HOY</b>. Para ver todos los eventos disponibles <b>regístrate e ingresa</b> ¡Es gratis!</p>
+        <p id='logged-in' class="d-none">Los eventos resaltados ocurren <b>HOY</b>, ¡no te los pierdas!</font> </p>
         <p id='loading'><em>Loading events...</em></p>
         <div class='wrap'>
             <table class='table table-responsive' style='display: none'>
@@ -79,7 +80,8 @@
      var cognitoUserPoolId = 'us-east-1_mP9Mp5gQA';  // example: 'us-east-1_abcd12345'
     var cognitoUserPoolClientId = '4ggndrsi201o310br9f46ahbsi'; // example: 'abcd12345abcd12345abcd12345'
     var awsRegion = 'us-east-1'; 
-    var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getTodayNewer';
+    var api_base_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod'
+    var api_gateway_url = api_base_url+'/getTodayEvents';
     var app = angular.module('mysfitsApp', []);
     var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
     var gridScope;
@@ -95,11 +97,12 @@
     if(config != null) {
       refreshAWSCredentials();
       loggedInDisplay();
+      
     }
-
+    loadTable()
+    function loadTable(){
+    $("table.table").find("tr:gt(0)").remove();
     $(document).ready(function() {
-        var api_gateway_url = 'https://97acbbng16.execute-api.us-east-1.amazonaws.com/prod/getTodayNewer';
-        
         var rows = [];
         var tudei = false
         $.getJSON(api_gateway_url, function(data) {
@@ -117,10 +120,12 @@
                     
                 </tr>`);
             });
+            
             $('table.table').append(rows.join()).show();
             $('#loading').hide();
         });
     });
+  }
     
     function printLinks(links){
       //alert(links[0]['url'])
@@ -188,7 +193,7 @@
     }
 
     function getSocialMediaIcon(media){
-      var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
+      //var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
       media=media.toLowerCase()
       if (socialMedia.includes(media)){
        return ' class="fa fa-'+media+'" '
@@ -201,7 +206,7 @@
     
     */
     function getMediatext(media){
-      var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
+      //var socialMedia=['facebook','twitter','instagram','youtube','tumblr']
       if (socialMedia.includes(media.toLowerCase())){
       return ' '
       
@@ -255,9 +260,16 @@
       $("#logInButton").addClass("d-none");
       $("#logOutButton").removeClass("d-none");
       $("#loginModal").modal("hide");
-      document.getElementById("welcomeLabel").innerHTML = "Bienvenid@ "+localStorage.getItem('email')+"    ";
+      document.getElementById("welcomeLabel").innerHTML = "Bienvenid@ <br>"+localStorage.getItem('email')+"    ";
       $("#welcomeLabel").removeClass("d-none")
-      //alert
+      $('#today').addClass("d-none")
+      $('#logged-in').removeClass('d-none')
+      api_gateway_url = api_base_url+'/getTodayNewer';
+      //$('table.table').remove();
+      
+      loadTable()
+      //( "#table.table" ).load( "index.html #table.table" );
+      //document.location.reload();
     }
 
     function initializeStorage() {
@@ -270,7 +282,7 @@
       localStorage.setItem('userPoolId', userPoolId);
       localStorage.setItem('clientId', clientId);
       localStorage.setItem('loginPrefix', loginPrefix);
-      localStorage.setItem('name','test')
+      //localStorage.setItem('name','test')
     }
 
 
@@ -330,22 +342,22 @@
           });
           localStorage.setItem('awsConfig', JSON.stringify(AWS.config));
           localStorage.setItem('email', email);
-          //localStorage.setItem('email', email);
-
+          
+          //console.log(cognitoUser.storage.getName())
           cognitoUser.getUserAttributes(function(err, result) {
             if (err) {
                 alert(err);
                 return;
             }
             for (i = 0; i < result.length; i++) {
-                console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
+                //console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
                 //localStorage.setItem('')
                 if (result[i].getName() == 'sub') {
-                  console.log('Overwriting userId into local storage');
+                  //console.log('Overwriting userId into local storage');
                   localStorage.setItem('userId', result[i].getValue());
                 }
                if (result[i].getName() == 'given_name') {
-                  console.log('Wrtiting Name '+result[i].getValue());
+                  //console.log('Saving Name '+result[i].getValue());
                   localStorage.setItem('name', result[i].getValue());
                 
                 }
@@ -384,7 +396,7 @@
                     cognitoUser.refreshSession(result.getRefreshToken(), function(err, result) {
 
                         if (err) {//throw err;
-                            console.log('In the err: '+err);
+                            console.log('In the err: '+err.message);
                         }
                         else{
                             localStorage.setItem('awsConfig', JSON.stringify(AWS.config));
