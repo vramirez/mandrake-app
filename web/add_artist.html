@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Register for MandrakeApp</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="js/aws-cognito-sdk.min.js"></script>
+    <script src="js/amazon-cognito-identity.min.js"></script>
+  </head>
+  <body style="background-color:#EBEBEB">
+    <div class="container">
+        <h3>Registro en MandrakeApp</h3>
+        <form id="userDetails" >
+          <div class="form-group">
+            <label for="gname">Nombre(s):</label>
+            <input type="text" class="form-control" id="gname" placeholder="Ingrese nombre" name="gname" required>
+            <label for="lname">Apellido(s):</label>
+            <input type="text" class="form-control" id="lname" placeholder="Ingrese apellidos" name="lname" required>
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Ingrese su email personal" name="email">
+            <label for="pwd">Password: </label>
+            <input type="password" class="form-control" id="pwd" placeholder="Password " name="pwd">
+            <label for="confirmPwd">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirmPwd" placeholder="Confirme password" name="confirmPwd">
+          <button type="submit" class="btn btn-info">Enviar</button>
+        </div>
+      </form>
+      </div>
+</body>

@@ -1,14 +1,10 @@
 import json
 import mandrakeService as mk
 
-
 def lambda_main(event, context):
     obj=mk.getAllEvents()     
     return obj
         
-    
-
-
 def write_event(event, context):
     mk.putItem(event)
     return event
@@ -19,11 +15,18 @@ def defoe(event, context):
     
     return "ok"
 
-
 def getTodayNewerEvents(event, context):
     obj=mk.getTodayNewer('US/Pacific')
     return obj
 
 def getTodayEvents(event, context):
     obj=mk.getToday()
+    return obj
+
+def putArtist(event,context):
+    obj=mk.saveArtist(event['artist'],event['photo_url'])
+    return obj
+
+def getArtistByName(event,context):
+    obj= mk.getArtist(event['name'])
     return obj

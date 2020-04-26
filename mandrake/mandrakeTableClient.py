@@ -1,4 +1,5 @@
 import boto3
+import uuid
 import json
 import logging
 from collections import defaultdict
@@ -12,54 +13,19 @@ import pytz
 # DynamoDB, so no credentials need to be stored/managed at all by our code!
 client = boto3.client('dynamodb')
 dynamodb = boto3.resource('dynamodb')
-TABLE_NAME="Mandrake"
+TABLE_NAME="events"
 table = dynamodb.Table(TABLE_NAME)
-
-def getEventsJson(items):
-    # loop through the returned mysfits and add their attributes to a new dict
-    # that matches the JSON response structure expected by the frontend.
-    mandrakeList = defaultdict(list)
-
-    for item in items:
-        mandrake = {}
-
-        mandrake["artist"] = item["artist"]["S"]
-        mandrake["date"] = item["date"]["S"]
-        '''mandrake["link"] = item["link"]["S"]
-        mandrake["description"] = item["Description"]["S"]
-        mandrake["age"] = int(item["Age"]["N"])
-        mandrake["goodevil"] = item["GoodEvil"]["S"]
-        mandrake["lawchaos"] = item["LawChaos"]["S"]
-        mandrake["thumbImageUri"] = item["ThumbImageUri"]["S"]
-        mandrake["profileImageUri"] = item["ProfileImageUri"]["S"]
-        mandrake["likes"] = item["Likes"]["N"]
-        mandrake["adopted"] = item["Adopted"]["BOOL"]
-        '''
-        mandrakeList["events"].append(mandrake)
-    print("a: ",type(mandrakeList))
-    print("b: ",type(mandrakeList["events"]))
-    return dict(mandrakeList["events"])
+ARTIST_CATEGORY='ARTIST'
 
 def getAllEvents():
-    # Retrieve all Mysfits from DynamoDB using the DynamoDB scan operation.
-    # Note: The scan API can be expensive in terms of latency when a DynamoDB
-    # table contains a high number of records and filters are applied to the
-    # operation that require a large amount of data to be scanned in the table
-    # before a response is returned by DynamoDB. For high-volume tables that
-    # receive many requests, it is common to store the result of frequent/common
-    # scan operations in an in-memory cache. DynamoDB Accelerator (DAX) or
-    # use of ElastiCache can provide these benefits. But, because out Mythical
-    # Mysfits API is low traffic and the table is very small, the scan operation
-    # will suit our needs for this workshop.
     response = table.scan(
-        TableName='Mandrake'
+        TableName=TABLE_NAME
     )
 
     logging.info(response["Items"])
 
     # loop through the returned mysfits and add their attributes to a new dict
     # that matches the JSON response structure expected by the frontend.
-    #mandrakeList = getEventsJson(response["Items"])
     #print("c: ",type(mandrakeList))
     #type(response["Items"])
     return response["Items"]
@@ -101,7 +67,7 @@ def queryMysfits(queryParam):
 
 def putItem(item):
     response = table.put_item(
-        TableName='Mandrake',
+        TableName=TABLE_NAME,
             Item=item)
 
 def getTodayAndNewerEvents(tz='UTC'):    
@@ -131,6 +97,24 @@ def getDayEvents(deit,tz='America/Bogota'):
         FilterExpression=fe
     )
     return response
+
+def putArtist(id,artist_name, photo_url):
+    artist={}
+    artist['pk_id']=id
+    artist['sk_id']=ARTIST_CATEGORY
+    artist['name']=artist_name
+    artist['photo_url']=photo_url
+    #artist=json.dumps(artist,ensure_ascii=False).encode('utf8')
+    response = table.put_item(Item=artist)
+    return response
+
+def getArtist(id):
+    ki={}
+    ki['pk_id']=id
+    ki['sk_id']=ARTIST_CATEGORY
+    response=table.get_item(Key=ki)
+    return response
+
 # So we can test from the command line
 '''if __name__ == "__main__":
     parser = argparse.ArgumentParser()

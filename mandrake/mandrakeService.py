@@ -1,6 +1,6 @@
 #from flask import Flask, jsonify, json, Response, request
 import mandrakeTableClient
-
+import uuid
 
 # A very basic API created using Flask that has two possible routes for requests.
 
@@ -51,3 +51,26 @@ def getTodayNewer(tz):
 
 def getToday():
     return mandrakeTableClient.getTodayEvents()
+
+def getUUID(name,prefix=''):
+        lname=name.lower()
+        lname=''.join(lname.split(' '))
+        print(lname)
+        name_id=uuid.uuid5(uuid.NAMESPACE_DNS,lname)
+        return prefix+"_"+name_id.hex        
+
+def getEventUUID(event):
+        return getUUID(event,'event')
+
+def getArtistUUID(event):
+        return getUUID(event,'artist')
+
+def saveArtist(name,photo):
+    pk=getArtistUUID(name)
+    return mandrakeTableClient.putArtist(pk,name,photo)
+
+def getArtist(name):
+    pk=getArtistUUID(name)
+    return mandrakeTableClient.getArtist(pk)
+    
+#def saveEvent(name,artists,)
