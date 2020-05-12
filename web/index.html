@@ -218,13 +218,15 @@
 
     function getEventType(item){
       type=item['type']
-      switch(type){
+      switch(type.toLowerCase()){
       case "music":
       return "Concierto"
       case "talk":
       return "Charla"
       case "art":
       return "Arte y Cultura"
+      case "movie":
+        return "Cine"
       case "workshop":
         return "Taller"
       default :

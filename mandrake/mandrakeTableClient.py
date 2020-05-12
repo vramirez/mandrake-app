@@ -15,7 +15,7 @@ client = boto3.client('dynamodb')
 dynamodb = boto3.resource('dynamodb')
 TABLE_NAME="events"
 table = dynamodb.Table(TABLE_NAME)
-ARTIST_CATEGORY='ARTIST'
+ARTIST_CATEGORY='NAME'
 
 def getAllEvents():
     response = table.scan(
